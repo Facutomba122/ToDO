@@ -1,0 +1,25 @@
+body{
+    background-color: black;
+    color:whitesmoke;
+}
+
+.formContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.customBtn{
+    background-color: #8687E7;
+    color:whitesmoke;
+    font-weight: 600;
+}
+
+.customBtn:hover{
+    background-color: #afb0df;
+}
+
+
+
+.inputField{
+    margin-top: 3vh;
+}
