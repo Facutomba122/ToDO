@@ -13,6 +13,9 @@ public class Roles {
     private UUID id;
     private String name;
 
+    public Roles() {
+    } 
+    
     public Roles(String name) {
         this.name = name;
     }

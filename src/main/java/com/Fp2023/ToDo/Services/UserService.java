@@ -5,10 +5,12 @@ import com.Fp2023.ToDo.Entity.MyUser;
 import com.Fp2023.ToDo.Entity.Roles;
 import com.Fp2023.ToDo.Repositories.RolesRepository;
 import com.Fp2023.ToDo.Repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,60 +30,100 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RolesRepository rolRepository;
-    
+
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    };
+    }
+    
+    public Optional<MyUser> findById(UUID id){
+        return userRepository.findById(id);
+    }
+    
+    public Optional<MyUser> findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
     
     
-    public MyUser saveUser(UserDTO userDTO) throws Exception{
+    @Transactional
+    public void deleteUser(UUID id){
         try {
-            if (userRepository.findByUsername(userDTO.getUsername()) == null){
-                MyUser auxUser = new MyUser(
-                        userDTO.getUsername(),
-                        bCryptPasswordEncoder().encode(userDTO.getPassword()),
-                        userDTO.getEmail(),
-                        
-                        ///ESTE ROL SE CREA AUNQUE YA EXISTA DICHO ROL PORQUE NO BUSCA PRIMERO
-                        //IMPLEMENTAR METODO QUE BUSQUE EL ROL SI EXISTE Y LO CREE SINO.
-                        Arrays.asList(checkRoles()));
-                return userRepository.save(auxUser);
-            } else {
-                throw new Exception("El nombre de usuario ya existe.");
-            }
+            userRepository.deleteById(id);
         } catch (Exception e){
+            throw e;
+        }
+    }
+    
+    @Transactional
+    public MyUser saveUser(UserDTO userDTO) throws Exception {
+        try {
+            MyUser auxUser = new MyUser(
+                    userDTO.getUsername(),
+                    bCryptPasswordEncoder().encode(userDTO.getPassword()),
+                    userDTO.getEmail(),
+                    Arrays.asList(checkRoles()));
+            return userRepository.save(auxUser);
+        } catch (Exception e) {
+            System.out.println(e);
             throw new Exception("No se pudo crear el nuevo usuario. Intente nuevamente más tarde");
         }
     }
     
+    @Transactional
+    public MyUser updateUser(MyUser updateUser, MyUser oldUser){
+        try {
+                MyUser auxUser = oldUser;
+                if (updateUser.getEmail() != null){
+                    auxUser.setEmail(updateUser.getEmail());
+                }
+                if (updateUser.getPassword() != null){
+                    auxUser.setPassword(bCryptPasswordEncoder().encode(updateUser.getPassword()));
+                }
+                if (updateUser.getTasks() != null){
+                    auxUser.setTasks(updateUser.getTasks());
+                }
+                if (updateUser.getUsername() != null){
+                    auxUser.setUsername(updateUser.getUsername());
+                }
+                return userRepository.save(auxUser);
+                
+        } catch (Exception e){
+            throw e;
+        }
+    }
+    
+    public List<MyUser> findAll(){
+         return userRepository.findAll();
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         Optional<MyUser> userResponse = Optional.ofNullable(userRepository.findByUsername(username));
-        if (userResponse.isPresent()){
+        if (userResponse.isPresent()) {
             MyUser user = userResponse.get();
             return new User(user.getUsername(), user.getPassword(), mapAuthoritiesToRoles(user.getRol()));
         }
         throw new UsernameNotFoundException("Usuario o contraseña invalidos");
     }
-    
-    public Roles checkRoles() throws Exception{
+
+    public Roles checkRoles() throws Exception {
         Optional<List<Roles>> responseRoles = Optional.ofNullable(rolRepository.findAll());
-        
-        if (responseRoles.isPresent()){
+
+        if (responseRoles.isPresent()) {
             List<Roles> allRoles = responseRoles.get();
-            if (allRoles.isEmpty()){
+            if (allRoles.isEmpty()) {
                 return new Roles("ADMIN");
             }
             return new Roles("USER");
         }
         throw new Exception("Error in register");
     }
-    
-    
-    
-    private Collection<? extends GrantedAuthority> mapAuthoritiesToRoles(Collection<Roles> roles){
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+
+    private Collection<? extends GrantedAuthority> mapAuthoritiesToRoles(Collection<Roles> roles) {
+        return roles.stream()
+                .map(
+                    role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
     }
 }

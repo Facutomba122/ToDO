@@ -15,13 +15,15 @@
         <h1>Registrarse</h1>
         <section>
             <form class="formContainer" th:action="@{/registerData}" method="POST" th:object="${user}">
-                <label class="labelForm inputField" for="username">Nombre de usuario</label>
-                <input type="text" placeholder="Nombre de usuario" th:field="*{username}" id="username">
-                <label class="labelForm inputField" for="password">Contraseña</label>
-                <input type="password" placeholder="Contraseña" th:field="*{password}" id="password">
-                <label class="labelForm inputField" for="confirmPassword">Repita la contraseña</label>
-                <input type="password" placeholder="Repita contraseña" th:field="*{confirmPassword}" id="confirmPassword">
-                <input class="inputField btn customBtn" type="submit" value="Registrarse" >
+                <label class="labelInputField" for="email">Correo electronico</label>
+                <input class="inputField" type="email" th:field="*{email}" id="email">
+                <label class="labelInputField" for="username">Nombre de usuario</label>
+                <input class="inputField"type="text" th:field="*{username}" id="username">
+                <label class="labelInputField" for="password">Contraseña</label>
+                <input class="inputField"type="password" th:field="*{password}" id="password">
+                <label class="labelInputField" for="confirmPassword">Repita la contraseña</label>
+                <input class="inputField"type="password" th:field="*{confirmPassword}" id="confirmPassword">
+                <input class="labelInputField btn customBtn" type="submit" value="Registrarse" >
             </form>
         </section>
     </main>

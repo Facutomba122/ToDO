@@ -15,11 +15,11 @@
         <h1>LOGIN</h1>
         <section class="">
             <form class="formContainer" th:action="@{/loginData}" method="POST" th:object="${user}">
-                <label class="labelForm inputField" for="username">Nombre de usuario</label>
-                <input type="text" placeholder="Nombre de usuario" th:field="*{username}" id="username">
-                <label class="labelForm inputField" for="password">Contraseña</label>
-                <input type="password" placeholder="Contraseña" th:field="*{password}" id="password">
-                <input class="inputField btn customBtn"type="submit" value="Iniciar sesion">
+                <label class="labelInputField inputField" for="username">Nombre de usuario</label>
+                <input class="inputField" type="text" th:field="*{username}" id="username">
+                <label class="labelInputField inputField" for="password">Contraseña</label>
+                <input class="inputField" type="password" th:field="*{password}" id="password">
+                <input class="labelInputField btn customBtn"type="submit" value="Iniciar sesion">
             </form>
         </section>
     </main>

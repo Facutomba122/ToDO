@@ -1,10 +1,10 @@
 package com.Fp2023.ToDo.DTO;
 
+
 public class UserDTO {
 
     private String username;
     private String password;
-    private String confirmPassword;
     private String email;
 
     public UserDTO() {
@@ -14,14 +14,6 @@ public class UserDTO {
         this.username = username;
         this.password = password;
         this.email = email;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
     }
 
     public String getUsername() {

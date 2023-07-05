@@ -25,6 +25,11 @@ public class SecurityConfig {
                     .anyRequest().permitAll()
         );
         
+        http.csrf(
+                (csrf) -> csrf
+                    .ignoringRequestMatchers("/user/**")
+        );
+        
         http.formLogin(
                 (form) -> form
                     .loginPage("/user/login")

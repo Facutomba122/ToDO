@@ -1,6 +1,7 @@
 package com.Fp2023.ToDo.Entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -8,10 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.Collection;
 import java.util.UUID;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class MyUser {
 
     @Id
@@ -20,8 +24,10 @@ public class MyUser {
 
     private String username;
     private String password;
+    @Column(nullable = false)
     private String email;
     private String tasks;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
@@ -40,12 +46,12 @@ public class MyUser {
         this.rol = rol;
     }
 
-    public MyUser(String username, String password, String email, String tasks, Collection<Roles> rol) {
+    public MyUser(String username, String password, String email, Collection<Roles> rol, String tasks) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.tasks = tasks;
         this.rol = rol;
+        this.tasks = tasks;
     }
 
     public String getTasks() {

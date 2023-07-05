@@ -1,4 +1,4 @@
-body{
+body {
     background-color: black;
     color:whitesmoke;
 }
@@ -18,8 +18,10 @@ body{
     background-color: #afb0df;
 }
 
-
-
-.inputField{
+.labelInputField{
     margin-top: 3vh;
+}
+
+input {
+    background-color: #979797;
 }
